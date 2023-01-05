@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+import './widgets/new_transaction.dart';
+import './widgets/transaction_list.dart';
+import 'models/tag.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter App',
+      theme: ThemeData(
+          primarySwatch: Colors.green,
+          accentColor: Colors.amber,
+          fontFamily: 'Anton',
+          textTheme: ThemeData.light().textTheme.copyWith(
+              titleMedium: TextStyle(
+                  fontFamily: 'Anton',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  titleMedium: TextStyle(
+                      fontFamily: 'Lato',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)))),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Tag> _adminTag = [];
+
+  void _addNewTag(String txTag) {
+    final newTx = Tag(
+      tagName: txTag,
+    );
+
+    setState(() {
+      _adminTag.add(newTx);
+    });
+  }
+
+  void _startAddNewTag(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (_) {
+          return GestureDetector(
+            onTap: () {},
+            child: NewTag(_addNewTag),
+            behavior: HitTestBehavior.opaque,
+          );
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            TagList(_adminTag),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add), onPressed: () => _startAddNewTag(context)),
+    );
+  }
+}
