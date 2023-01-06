@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -40,9 +42,28 @@ class _NewTagState extends State<NewTag> {
         onPressed: onClicked,
       );
 
-  Future pickImage() async {
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+  File? image;
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      final imageTemorary = File(image.path);
+      setState(() => this.image = imageTemorary);
+      // final imagePermanent = await saveImagePermanently(image.path);
+      // setState(() => this.image = imagePermanent);
+    } on Exception catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
+
+  // Future<File> saveImagePermanently(String imagePath) async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final name = basename(imagePath);
+  //   final image = File('${directory.path}'/$name');
+
+  //   return File(imagePath).copy(image.path);
+  // }
   // ************************
 
   void submitData() {
@@ -103,8 +124,18 @@ class _NewTagState extends State<NewTag> {
                 buildButton(
                   title: 'Pick Gallery',
                   icon: Icons.image_outlined,
-                  onClicked: () => pickImage(),
+                  onClicked: () => pickImage(ImageSource.gallery),
                 ),
+                image != null
+                    ? ClipOval(
+                        child: Image.file(
+                          image!,
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : FlutterLogo(size: 160),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: TextButton(
