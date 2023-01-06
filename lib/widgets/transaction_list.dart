@@ -52,6 +52,7 @@ class TagList extends StatelessWidget {
                       ),
                       title: Text(tags[index].tagName,
                           style: Theme.of(context).textTheme.titleSmall),
+                      subtitle: Text(dropdowncategories),
                     ),
                   );
                 },
