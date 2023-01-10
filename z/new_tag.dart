@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 class NewTag extends StatefulWidget {
   final Function addTag;
+
   NewTag(this.addTag);
 
   @override
@@ -21,6 +22,50 @@ class _NewTagState extends State<NewTag> {
     'Food',
     'Entertainment',
   ];
+
+  // Image
+  Widget buildButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onClicked,
+  }) =>
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            minimumSize: Size.fromHeight(56),
+            primary: Colors.white,
+            onPrimary: Colors.black,
+            textStyle: TextStyle(fontSize: 20)),
+        child: Row(children: [
+          Icon(icon, size: 28),
+          const SizedBox(width: 16),
+          Text(title),
+        ]),
+        onPressed: onClicked,
+      );
+
+  File? image;
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      final imageTemorary = File(image.path);
+      setState(() => this.image = imageTemorary);
+      // final imagePermanent = await saveImagePermanently(image.path);
+      // setState(() => this.image = imagePermanent);
+    } on Exception catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+  // Future<File> saveImagePermanently(String imagePath) async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final name = basename(imagePath);
+  //   final image = File('${directory.path}'/$name');
+
+  //   return File(imagePath).copy(image.path);
+  // }
+  // ************************
 
   void submitData() {
     final enteredTag = tagController.text;
@@ -78,6 +123,21 @@ class _NewTagState extends State<NewTag> {
                   controller: tagController,
                   onSubmitted: (_) => submitData(),
                 ),
+                buildButton(
+                  title: 'Pick Gallery',
+                  icon: Icons.image_outlined,
+                  onClicked: () => pickImage(ImageSource.gallery),
+                ),
+                image != null
+                    ? ClipOval(
+                        child: Image.file(
+                          image!,
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : FlutterLogo(size: 160),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: TextButton(

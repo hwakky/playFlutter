@@ -20,10 +20,10 @@ class TagList extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: Image.asset(
                       'assets/images/yduck.png',
@@ -52,7 +52,8 @@ class TagList extends StatelessWidget {
                       ),
                       title: Text(tags[index].tagName,
                           style: Theme.of(context).textTheme.titleSmall),
-                      subtitle: Text(dropdowncategories),
+                      // subtitle: Text(tags[index].tagCategories),
+                      subtitle: Text(tags[index].tagCategories),
                     ),
                   );
                 },

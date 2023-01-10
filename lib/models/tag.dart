@@ -1,5 +1,5 @@
 class Tag {
   String tagName;
-
-  Tag({required this.tagName});
+  String tagCategories;
+  Tag({required this.tagName, required this.tagCategories});
 }
